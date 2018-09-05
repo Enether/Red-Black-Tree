@@ -192,7 +192,7 @@ class RedBlackTree:
     def __init__(self) -> None:
         self.count = 0
         self.root = None
-        self.type = type(None)
+        self.value_type = type(None)
 
         # Used for deletion and uses the sibling's relationship with
         # his parent as a guide to the rotation
