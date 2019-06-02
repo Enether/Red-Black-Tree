@@ -9,7 +9,9 @@ NIL = 'NIL'
 
 
 class Node:
+
     def __init__(self, value, color, parent, left=None, right=None):
+        
         self.value = value
         self.color = color
         self.parent = parent
@@ -17,40 +19,45 @@ class Node:
         self.right = right
 
     def __repr__(self):
+        
         return '{color} {val} Node'.format(color=self.color, val=self.value)
 
     def __iter__(self):
+        
+        print(str(self.value) + " (" + str(self.color)+")")
+        
         if self.left.color != NIL:
+            print('left ({})'.format(str(self.value)));
             yield from self.left.__iter__()
 
-        yield self.value
-
         if self.right.color != NIL:
+            print('right ({})'.format(str(self.value)));
             yield from self.right.__iter__()
+ 
 
     def __eq__(self, other):
-        if self.color == NIL and self.color == other.color:
-            return True
+            
+            if self.color == NIL and self.color == other.color:
+                return True
 
-        if self.parent is None or other.parent is None:
-            parents_are_same = self.parent is None and other.parent is None
-        else:
-            parents_are_same = self.parent.value == other.parent.value and self.parent.color == other.parent.color
-        return self.value == other.value and self.color == other.color and parents_are_same
+            if self.parent is None or other.parent is None:
+                parents_are_same = self.parent is None and other.parent is None
+            else:
+                parents_are_same = self.parent.value == other.parent.value and self.parent.color == other.parent.color
+                
+            return self.value == other.value and self.color == other.color and parents_are_same
 
     def has_children(self) -> bool:
-        """ Returns a boolean indicating if the node has children """
+        
         return bool(self.get_children_count())
 
     def get_children_count(self) -> int:
-        """ Returns the number of NOT NIL children the node has """
+        
         if self.color == NIL:
             return 0
         return sum([int(self.left.color != NIL), int(self.right.color != NIL)])
 
-
 class RedBlackTree:
-    # every node has null nodes as children initially, create one such object for easy management
     NIL_LEAF = Node(value=None, color=NIL, parent=None)
 
     def __init__(self):
@@ -66,6 +73,10 @@ class RedBlackTree:
         if not self.root:
             return list()
         yield from self.root.__iter__()
+
+    def __repr__(self):
+           
+        return self.root
 
     def add(self, value):
         if not self.root:
@@ -523,3 +534,100 @@ class RedBlackTree:
             sibling = parent.right
             direction = 'R'
         return sibling, direction
+
+    def _build_tree_string(self, root=None, curr_index=0, index=False, delimiter='-'):
+    
+        if curr_index == 0:
+            root = self.root
+            
+        if root is None:
+            return [], 0, 0, 0
+
+        line1 = []
+        line2 = []
+        
+        if index:
+            node_repr = '{}{}{}'.format(curr_index, delimiter, root.value)
+        else:
+            node_repr = str(root.value)
+
+        if node_repr == 'None':
+            node_repr = 'NIL'
+        
+        new_root_width = gap_size = len(node_repr)
+        
+        if root.color == 'RED':
+            node_repr = ('\033[30m'+ '\033[41m'+ node_repr +'\033[0;0m')
+
+        
+        # Get the left and right sub-boxes, their widths, and root repr positions
+        l_box, l_box_width, l_root_start, l_root_end = \
+            self._build_tree_string(root.left, 2 * curr_index + 1, index, delimiter)
+        r_box, r_box_width, r_root_start, r_root_end = \
+            self._build_tree_string(root.right, 2 * curr_index + 2, index, delimiter)
+
+        # Draw the branch connecting the current root node to the left sub-box
+        # Pad the line with whitespaces where necessary
+        if l_box_width > 0:
+            l_root = (l_root_start + l_root_end) // 2 + 1
+            line1.append(' ' * (l_root + 1))
+            line1.append('_' * (l_box_width - l_root))
+            line2.append(' ' * l_root + '/')
+            line2.append(' ' * (l_box_width - l_root))
+            new_root_start = l_box_width + 1
+            gap_size += 1
+        else:
+            new_root_start = 0
+
+        # Draw the representation of the current root node
+        line1.append(str(node_repr))
+        line2.append(' ' * new_root_width)
+
+        # Draw the branch connecting the current root node to the right sub-box
+        # Pad the line with whitespaces where necessary
+        if r_box_width > 0:
+            r_root = (r_root_start + r_root_end) // 2
+            line1.append('_' * r_root)
+            line1.append(' ' * (r_box_width - r_root + 1))
+            line2.append(' ' * r_root + '\\')
+            line2.append(' ' * (r_box_width - r_root))
+            gap_size += 1
+            
+        new_root_end = new_root_start + new_root_width - 1
+
+        # Combine the left and right sub-boxes with the branches drawn above
+        gap = ' ' * gap_size
+        new_box = [''.join(line1), ''.join(line2)]
+        for i in range(max(len(l_box), len(r_box))):
+            l_line = l_box[i] if i < len(l_box) else ' ' * l_box_width
+            r_line = r_box[i] if i < len(r_box) else ' ' * r_box_width
+            new_box.append(l_line + gap + r_line)
+       
+        len_new_box = len(new_box[0])
+        if root.color == 'RED':
+            len_new_box = len(new_box[0]) - 16
+
+        # Return the new box, its width and its root repr positions
+        return new_box, len_new_box, new_root_start, new_root_end
+
+"""
+
+Testing the print with a tree with 17 random nodes
+
+"""
+
+import numpy as np
+
+arvore = RedBlackTree()
+
+rnd = np.random.randint(100, size=(17))
+
+for i in rnd:
+    arvore.add(i)
+    
+arvore.remove(9)
+
+for linha in arvore._build_tree_string()[0]:
+    
+    print(linha)
+
