@@ -24,7 +24,6 @@ class Node:
         return '{color} {val} Node'.format(color=self.color, val=self.value)
 
     def __iter__(self):
-        print(str(self.value) + " (" + str(self.color)+")")
         if self.left.color != NIL:
             print('left ({})'.format(str(self.value)))
             yield from self.left.__iter__()
