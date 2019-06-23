@@ -2211,6 +2211,7 @@ class RbTreePerformanceTests(unittest.TestCase):
          # The number 17 of the tree nodes is in consequence of the terminal size
         tree = RedBlackTree()
         rnd = np.random.randint(100, size=(17))
+        print('\n')
         for i in rnd:
             tree.add(i)
         tree.remove(9)

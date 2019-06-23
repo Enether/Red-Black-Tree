@@ -651,12 +651,11 @@ class RedBlackTree:
 
         line1 = []
         line2 = []
+
         if index:
             node_repr = '{}{}{}'.format(curr_index, delimiter, root.value)
         else:
-            node_repr = str(root.value)
-        if node_repr == 'None':
-            node_repr = 'NIL'
+            node_repr = 'NIL' if root.value is None else str(root.value)
         new_root_width = gap_size = len(node_repr)
         if root.color == 'RED':
             node_repr = ('\033[30m' + '\033[41m' + node_repr + '\033[0;0m')
