@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 
 """
 A classic (not left-leaning) Red-Black Tree implementation,
@@ -687,12 +687,12 @@ Testing the print with a tree with 17 random nodes
 
 """
 
-arvore = RedBlackTree()
+tree = RedBlackTree()
 
 rnd = np.random.randint(100, size=(17))
 
 for i in rnd:
-    arvore.add(i)
-arvore.remove(9)
-for linha in arvore._build_tree_string()[0]:
-    print(linha)
+    tree.add(i)
+tree.remove(9)
+for line in tree._build_tree_string()[0]:
+    print(line)
