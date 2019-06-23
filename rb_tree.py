@@ -1,5 +1,3 @@
-import numpy as np
-
 """
 A classic (not left-leaning) Red-Black Tree implementation,
 supporting addition and deletion.
@@ -714,20 +712,3 @@ class RedBlackTree:
 
         # Return the new box, its width and its root repr positions
         return new_box, len_new_box, new_root_start, new_root_end
-
-
-"""
-
-Testing the print with a tree with 17 random nodes
-
-"""
-
-tree = RedBlackTree()
-
-rnd = np.random.randint(100, size=(17))
-
-for i in rnd:
-    tree.add(i)
-tree.remove(9)
-for line in tree._build_tree_string()[0]:
-    print(line)

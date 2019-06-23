@@ -1,5 +1,7 @@
 import unittest
 import random
+import numpy as np
+
 from datetime import datetime
 
 from rb_tree import RedBlackTree, Node, BLACK, RED, NIL
@@ -2204,6 +2206,16 @@ class RbTreePerformanceTests(unittest.TestCase):
 
         time_taken = datetime.now()-start_time
         self.assertTrue(time_taken.seconds < 1)
+
+    def test_tree_print_with_17_random_nodes(self):
+         # The number 17 of the tree nodes is in consequence of the terminal size
+        tree = RedBlackTree()
+        rnd = np.random.randint(100, size=(17))
+        for i in rnd:
+            tree.add(i)
+        tree.remove(9)
+        for line in tree._build_tree_string()[0]:
+            print(line)
 
 
 if __name__ == '__main__':
