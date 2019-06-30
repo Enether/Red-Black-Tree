@@ -29,6 +29,7 @@ class Node:
         if self.right.color != NIL:
             print('right ({})'.format(str(self.value)))
             yield from self.right.__iter__()
+        yield self.value
 
     def __eq__(self, other):
         if self.color == NIL and self.color == other.color:
@@ -37,13 +38,14 @@ class Node:
         if self.parent is None or other.parent is None:
             parents_are_same = self.parent is None and other.parent is None
         else:
-            parents_are_same = self.parent.value
-            self.parent.value == other.parent.value and self.parent.color
-            other.parent.value and self.parent.color == other.parent.color
+            parents_are_same = self.parent.value == (
+             other.parent.value and self.parent.color) == other.parent.color
+
         return (self.value == other.value and
                 self.color == other.color and parents_are_same)
 
     def has_children(self) -> bool:
+        """ Returns a boolean indicating if the node has children """
         return bool(self.get_children_count())
 
     def get_children_count(self) -> int:
@@ -54,7 +56,11 @@ class Node:
 
 
 class RedBlackTree:
+    """
+    every node has null nodes as children initially,
+    create one such object for easy management
 
+    """
     NIL_LEAF = Node(value=None, color=NIL, parent=None)
 
     def __init__(self):
@@ -117,6 +123,7 @@ class RedBlackTree:
         self.count -= 1
 
     def contains(self, value) -> bool:
+
         """
         Returns a boolean indicating if the given
         value is present in the tree
